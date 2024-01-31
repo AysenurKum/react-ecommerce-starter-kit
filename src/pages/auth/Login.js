@@ -5,7 +5,7 @@ import loginImg from "../../assets/login.png"
 import { Link, useNavigate } from 'react-router-dom'
 import { FaGoogle } from 'react-icons/fa'
 import Card from '../../components/card/Card'
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, GoogleAuthProvider , signInWithPopup} from "firebase/auth";
 import { auth } from '../../firebase/config'
 import { toast } from 'react-toastify'
 import Loader from '../../components/loader/Loader'
@@ -37,6 +37,18 @@ const Login = () => {
 
   }
 
+  const provider = new GoogleAuthProvider();
+  const signInWithGoogle = () => {
+    signInWithPopup(auth, provider)
+  .then((result) => {
+    toast.success("Login successfully...")
+    navigate("/")
+  }).catch((error) => {
+    toast.error(error.message)
+  });
+  }
+  
+
   return (
     <>
     {isLoading && <Loader/>}
@@ -55,7 +67,7 @@ const Login = () => {
           </div>
           <p>-- or --</p>
         </form>
-        <button className='--btn --btn-danger --btn-block'><FaGoogle color='#fff' /> &nbsp; Login With Google</button>
+        <button className='--btn --btn-danger --btn-block' onClick={signInWithGoogle}><FaGoogle color='#fff' /> &nbsp; Login With Google</button>
         <span className={styles.register}>
           <p>Don't have a account ?</p> &nbsp;
           <Link to="/register">Register</Link>
