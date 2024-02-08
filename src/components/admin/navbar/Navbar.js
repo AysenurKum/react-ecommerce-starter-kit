@@ -14,30 +14,22 @@ const Navbar = () => {
   return (
     <div className={styles.navbar}>
       <div className={styles.user}>
-        <FaUserCircle size={40} color='$fff' />
+        <FaUserCircle size={40} color='white'/>
         <h4>{userName}</h4>
       </div>
       <nav>
         <ul>
           <li>
-            <NavLink to="/admin/home" className={activeLink}>
-              Home
-            </NavLink>
+            <NavLink to="/admin/home" className={activeLink}>Home</NavLink>
           </li>
           <li>
-            <NavLink to="/admin/all-products" className={activeLink}>
-              All Products
-            </NavLink>
+            <NavLink to="/admin/all-products" className={activeLink}>All Products</NavLink>
           </li>
           <li>
-            <NavLink to="/admin/add-product" className={activeLink}>
-              Add Product
-            </NavLink>
+            <NavLink to="/admin/add-product/ADD" className={activeLink}>Add Product</NavLink>
           </li>
           <li>
-            <NavLink to="/admin/orders" className={activeLink}>
-              Orders
-            </NavLink>
+            <NavLink to="/admin/orders" className={activeLink}>Orders</NavLink>
           </li>
         </ul>
       </nav>
