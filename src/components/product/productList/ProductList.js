@@ -3,11 +3,14 @@ import React, { useState } from 'react'
 import styles from "./ProductList.module.scss"
 import { FaListAlt } from 'react-icons/fa'
 import {BsFillGridFill} from "react-icons/bs"
+import Search from '../../search/Search'
+import ProductItem from '../productItem/ProductItem'
 
-const ProductList = () => {
+const ProductList = ({products}) => {
   const [grid,setGrid] = useState(true)
+  const [search,setSearch] = useState("")
   return (
-    <div className={styles["product-list"]} id='product'>
+    <div className={styles["product-list"]} id='products'>
       <div className={styles.top}>
         <div className={styles.icons}>
           <BsFillGridFill size ={22} color="orangered" onClick={()=>setGrid(true)}/>
@@ -18,8 +21,8 @@ const ProductList = () => {
           </div>
           <div>
             <p>
-            <p>Search</p>
-          </p>
+              <Search value={search} onChange={(e)=>setSearch(e.target.value)}/>
+            </p>
           </div>
           
           <div className={styles.sort}>
@@ -32,8 +35,24 @@ const ProductList = () => {
               <option value="z-a">Z-A</option>
             </select>
           </div>
+          
 
         </div>
+        <div className={grid ? `${styles.grid}` : `${styles.list}`}>
+            {products.length === 0 ? (
+              <p>No product found</p>
+            ):(
+              <>
+              {products.map((product) => {
+                return (
+                  <div key={product.id}>
+                    <ProductItem {...product} grid={grid} product={product} />
+                  </div>
+                )
+              })}
+              </>
+            )}
+          </div>
       </div>
   )
 }
