@@ -36,7 +36,7 @@ const Pagination = ({currentPage,setCurrentPage,productsPerPage,totalProducts}) 
 
   return (
     <ul className={styles.pagination}>
-      <li onClick={paginatePrev} className={currentPage === pageNumbers[0] ? `${styles.hidden}` : null }>
+      <li onClick={paginatePrev} className={currentPage === pageNumbers[0] ? `${styles.hidden}` : null }>Prev
       </li>
       {pageNumbers.map((number)=>{
         if(number<maxPageNumberLimit + 1 && number > minPageNumberLimit){
