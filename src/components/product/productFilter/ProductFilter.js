@@ -26,6 +26,10 @@ const ProductFilter = () => {
     ...new Set(products.map((product) => product.brand))
   ]
 
+  useEffect(()=>{
+    setPrice(maxPrice)
+  },[maxPrice])
+
   useEffect(()=> {
     dispatch(FILTER_BY_BRAND({products,brand}))
   },[dispatch,products,brand])
@@ -38,6 +42,14 @@ const ProductFilter = () => {
     setCategory(cat)
     dispatch(FILTER_BY_CATEGORY({products,category:cat}))
   }
+
+  const clearFilters = () => {
+    setCategory("All")
+    setBrand("All")
+    setPrice(maxPrice)
+    dispatch(FILTER_BY_CATEGORY({products,category:"All"}))
+  }
+
   return (
     <div className={styles.filter}>
       <h4>Categories</h4>
@@ -63,7 +75,7 @@ const ProductFilter = () => {
           <input type='range' value={price} onChange={(e)=>setPrice(e.target.value)} name='price' min={minPrice} max={maxPrice}/>
         </div>
         <br/>
-        <button className='--btn --btn-danger'>Clear Filter</button>
+        <button className='--btn --btn-danger' onClick={clearFilters}>Clear Filter</button>
       </div>
     </div>
   )
