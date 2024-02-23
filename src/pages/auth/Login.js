@@ -1,52 +1,66 @@
 //// kayıtlı kullanıcılar için giriş sayfası
-import React, { useState } from 'react'
-import styles from "./auth.module.scss"
-import loginImg from "../../assets/login.png"
-import { Link, useNavigate } from 'react-router-dom'
-import { FaGoogle } from 'react-icons/fa'
-import Card from '../../components/card/Card'
-import { signInWithEmailAndPassword, GoogleAuthProvider , signInWithPopup} from "firebase/auth";
-import { auth } from '../../firebase/config'
-import { toast } from 'react-toastify'
-import Loader from '../../components/loader/Loader'
+import React, { useState } from "react";
+import styles from "./auth.module.scss";
+import loginImg from "../../assets/login.png";
+import { Link, useNavigate } from "react-router-dom";
+import { FaGoogle } from "react-icons/fa";
+import Card from "../../components/card/Card";
+import {
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
+import { auth } from "../../firebase/config";
+import { toast } from "react-toastify";
+import Loader from "../../components/loader/Loader";
+import { selectPreviousURL } from '../../redux/slice/cartSlice'
+import { useSelector } from "react-redux";
+
 
 const Login = () => {
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const previousURL = useSelector(selectPreviousURL)
 
-  const [isLoading,setIsLoading] = useState(false)
-
-  const navigate = useNavigate()
+  const redirectUser = () => {
+    if(previousURL.includes("cart")){
+      return navigate("/cart")
+    }
+    else{
+      navigate("/")
+    }
+  }
 
   const loginUser = (e) => {
     e.preventDefault();
     // console.log(email,password)
-    setIsLoading(true)
+    setIsLoading(true);
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-        setIsLoading(false)
-        toast.success("Login Successfully...")
-        navigate("/")
+        setIsLoading(false);
+        toast.success("Login Successfully...");
+        redirectUser()
       })
       .catch((error) => {
-        setIsLoading(false)
-        toast.error(error.message)
+        setIsLoading(false);
+        toast.error(error.message);
       });
-
-  }
+  };
 
   const provider = new GoogleAuthProvider();
   const signInWithGoogle = () => {
     signInWithPopup(auth, provider)
-  .then((result) => {
-    toast.success("Login successfully...")
-    navigate("/")
-  }).catch((error) => {
-    toast.error(error.message)
-  });
-  }
+      .then((result) => {
+        toast.success("Login successfully...")
+        redirectUser()
+      })
+      .catch((error) => {
+        toast.error(error.message)
+      });
+  };
   
 
   return (
