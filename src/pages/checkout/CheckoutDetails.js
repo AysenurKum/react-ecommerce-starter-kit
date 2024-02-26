@@ -3,6 +3,10 @@ import React, { useState } from 'react'
 import styles from "./CheckoutDetails.module.scss"
 import Card from '../../components/card/Card';
 import { CountryDropdown } from 'react-country-region-selector';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { SAVE_BILLING_ADDRESS, SAVE_SHIPPING_ADDRESS } from '../../redux/slice/checkoutSlice';
+import CheckoutSummary from '../../components/checkoutSummary/CheckoutSummary';
 
 const initialAddressState = {
   name:"",
@@ -21,6 +25,9 @@ const CheckoutDetails = () => {
   const [shippingAddress,setShippingAddress] = useState({...initialAddressState});
   const [billingAddress,setBillingAddress] = useState({...initialAddressState});
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
 
   const handleShipping = (event) => {
     const{name,value} = event.target
@@ -32,8 +39,11 @@ const CheckoutDetails = () => {
   }
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log(shippingAddress)
-    console.log(billingAddress)
+    // console.log(shippingAddress)
+    // console.log(billingAddress)
+    dispatch(SAVE_SHIPPING_ADDRESS(shippingAddress))
+    dispatch(SAVE_BILLING_ADDRESS(billingAddress))
+    navigate("/checkout")
   }
  
 
@@ -91,6 +101,11 @@ const CheckoutDetails = () => {
               <label>Phone</label>
               <input type='text' placeholder='Phone' required name='phone' value={billingAddress.phone} onChange={(e) => handleBilling(e)}/>
               <button type='submit' className='--btn --btn-primary'>Proceed To Checkout</button>
+            </Card>
+          </div>
+          <div>
+            <Card cardClass={styles.card}>
+              <CheckoutSummary/>
             </Card>
           </div>
         </form>
