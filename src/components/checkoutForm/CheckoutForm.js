@@ -6,6 +6,13 @@ import spinnerIMG from "../../assets/spinner.gif"
 import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js'
 import Card from '../card/Card'
 import CheckoutSummary from '../checkoutSummary/CheckoutSummary'
+import { useDispatch,useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { selectEmail, selectUserID } from '../../redux/slice/authSlice'
+import { CLEAR_CART, selectCartItems, selectCartTotalAmount } from '../../redux/slice/cartSlice'
+import { selectShippingAddress } from '../../redux/slice/checkoutSlice'
+import { Timestamp, addDoc, collection } from 'firebase/firestore'
+import { db } from "../../firebase/config";
 
 
 const CheckoutForm = () => {
@@ -16,8 +23,17 @@ const CheckoutForm = () => {
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const userID = useSelector(selectUserID);
+  const userEmail = useSelector(selectEmail);
+  const cartItems = useSelector(selectCartItems);
+  const cartTotalAmount = useSelector(selectCartTotalAmount);
+  const shippingAddress = useSelector(selectShippingAddress);
+
   const handleSubmit = async (e) => {
-    e.preventDefault(null);
+    e.preventDefault();
 
     if (!stripe || !elements) {
       return;
@@ -47,7 +63,32 @@ const CheckoutForm = () => {
   }
 
   const saveOrder = () => {
-    toast.success("Successfully save order")
+    // toast.success("Successfully save order")
+    const today = new Date()
+    // tarih
+    const date = today.toDateString()
+    // saat
+    const time = today.toLocaleTimeString()
+    const orderConfig = {
+      userID,
+      userEmail,
+      orderDate: date,
+      orderTime: time,
+      orderAmount: cartTotalAmount,
+      orderStatus: "Order Placed...",
+      cartItems,
+      shippingAddress,
+      createdAt: Timestamp.now().toDate()
+    }
+    try {
+      addDoc(collection(db,"orders"),orderConfig)
+      toast.success("Order saved")
+      dispatch(CLEAR_CART())
+      navigate("/checkout-success")
+    }
+    catch(error) {
+      toast.error(error.message)
+    }
   }
 
   const paymentElementOptions = {
